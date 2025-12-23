@@ -17,8 +17,8 @@ export function useComfyInstances() {
         try {
             const response = await ComfyAPI.listInstances();
             setInstances(response.data);
-        } catch (err: any) {
-            const msg = err.message || 'Failed to fetch instances';
+        } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : 'Failed to fetch instances';
             setError(msg);
             toast.error(msg);
         } finally {
@@ -34,8 +34,8 @@ export function useComfyInstances() {
             toast.success('Instance spawned successfully!');
             await fetchInstances(); // Refresh list
             return response.data;
-        } catch (err: any) {
-            const msg = err.message || 'Failed to spawn instance';
+        } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : 'Failed to spawn instance';
             setError(msg);
             toast.error(msg);
             return null;
@@ -50,8 +50,8 @@ export function useComfyInstances() {
             setInstances(prev => prev.map(inst => inst.id === instanceId ? response.data : inst));
             toast.success('Instance updated');
             return response.data;
-        } catch (err: any) {
-            const msg = err.message || 'Failed to update instance';
+        } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : 'Failed to update instance';
             toast.error(msg);
             return null;
         }
@@ -62,8 +62,8 @@ export function useComfyInstances() {
             toast.info('Workflow scan started...');
             await ComfyAPI.scanWorkflows(instanceId, workflowName);
             toast.success('Workflow scan completed');
-        } catch (err: any) {
-            const msg = err.message || 'Failed to scan workflow';
+        } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : 'Failed to scan workflow';
             toast.error(msg);
         }
     }, []);
@@ -72,8 +72,8 @@ export function useComfyInstances() {
         try {
             const response = await ComfyAPI.getWorkflows(instanceId);
             return response.data.workflows;
-        } catch (err: any) {
-            const msg = err.message || 'Failed to fetch workflows';
+        } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : 'Failed to fetch workflows';
             toast.error(msg);
             return [];
         }
