@@ -56,9 +56,16 @@ export default function AuthenticatedLayout({
                             </Link>
                         </div>
 
-                     
-
-                        {/* User Info and Logout */}
+                        {/* Navigation Links */}
+                        <div className="hidden md:flex items-center gap-6">
+                            <Link href="/" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                                Studio
+                            </Link>
+                            <Link href="/comfy" className="text-sm font-medium text-gray-300 hover:text-white transition-colors flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                                Comfy Instances
+                            </Link>
+                        </div>
                         <div className="flex items-center gap-4">
                             {user && (
                                 <div className="text-sm text-gray-300">

@@ -2,11 +2,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
+import { config } from '@/lib/config';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
-
-const WORKFLOW_API_URL = 'https://client.konama.fuzdi.fr';
 
 export async function GET(request: NextRequest) {
     try {
@@ -14,12 +13,12 @@ export async function GET(request: NextRequest) {
         const authorization = request.headers.get('Authorization');
 
         console.log('=== WORKFLOWS REQUEST ===');
-        console.log('🔄 Fetching workflows from:', WORKFLOW_API_URL);
+        console.log('🔄 Fetching workflows from:', config.authApiUrl);
         console.log('🔑 Authorization present:', !!authorization);
         console.log('🕒 Timestamp:', new Date().toISOString());
 
         // Forward request to the workflow service with auth header
-        const response = await axios.get(`${WORKFLOW_API_URL}/workflows`, {
+        const response = await axios.get(`${config.authApiUrl}/workflows`, {
             headers: {
                 'Content-Type': 'application/json',
                 ...(authorization && { Authorization: authorization }),

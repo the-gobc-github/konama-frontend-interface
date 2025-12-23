@@ -2,6 +2,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
+import { config } from '@/lib/config';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -27,10 +28,11 @@ export async function POST(request: NextRequest) {
         console.log('=== LOGOUT REQUEST ===');
         console.log('🚪 Logout request received');
         console.log('🕒 Timestamp:', new Date().toISOString());
+        console.log('🔗 URL:', `${config.authApiUrl}/auth/logout`);
 
         // Forward logout request to the auth service with Bearer token
         const authResponse = await axios.post(
-            'https://client.konama.fuzdi.fr/auth/logout',
+            `${config.authApiUrl}/auth/logout`,
             {},
             {
                 headers: {

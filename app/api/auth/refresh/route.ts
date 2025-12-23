@@ -2,6 +2,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
+import { config } from '@/lib/config';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -26,10 +27,11 @@ export async function POST(request: NextRequest) {
         console.log('=== TOKEN REFRESH REQUEST ===');
         console.log('🔄 Refresh token provided:', !!refreshToken);
         console.log('🕒 Timestamp:', new Date().toISOString());
+        console.log('🔗 URL:', `${config.authApiUrl}/auth/refresh`);
 
         // Forward refresh request to the auth service
         const authResponse = await axios.post(
-            'https://client.konama.fuzdi.fr/auth/refresh',
+            `${config.authApiUrl}/auth/refresh`,
             {
                 refreshToken,
             },

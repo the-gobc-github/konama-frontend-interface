@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PromptSubmissionPayload } from '@/types/workflow-api';
-
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://client.konama.fuzdi.fr';
+import { config } from '@/lib/config';
 
 /**
  * POST /api/submit-workflow
@@ -70,7 +69,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Forward the request to the backend /prompt endpoint
-    const backendUrl = `${BACKEND_API_URL}/prompt`;
+    const backendUrl = `${config.authApiUrl}/prompt`;
     console.log(`🔗 Forwarding to: ${backendUrl}`);
 
     const response = await fetch(backendUrl, {

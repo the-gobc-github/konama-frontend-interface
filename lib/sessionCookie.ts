@@ -81,7 +81,8 @@ export const getAuthTokens = (): {
     }
 
     return {
-        token: session.session.token,
+        // Fallback to session.id if token is empty
+        token: session.session.token || session.session.id,
         refreshToken: session.session.refreshToken,
     };
 };

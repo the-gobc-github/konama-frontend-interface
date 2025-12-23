@@ -9,7 +9,12 @@ export const config = {
 
     // Auth API URL (for authentication services)
     authApiUrl:
-        process.env.NEXT_PUBLIC_API_URL || 'https://client.konama.fuzdi.fr',
+        process.env.NODE_ENV === 'development'
+            ? 'http://host.docker.internal:4001'
+            : (process.env.NEXT_PUBLIC_API_URL || 'https://client.konama.fuzdi.fr'),
+
+    // Check if development mode
+    isDev: process.env.NODE_ENV === 'development',
 
     // Check if using external API (not localhost)
     isExternalApi:
