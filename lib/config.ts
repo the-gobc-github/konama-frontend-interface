@@ -4,14 +4,13 @@ export const config = {
     comfyApiUrl: process.env.NEXT_PUBLIC_COMFY_API_URL || '',
 
     // Workflow service API for retrieving workflows
-    workflowApiUrl:
-        process.env.NEXT_PUBLIC_WORKFLOW_API_URL || 'https://client.konama.fuzdi.fr',
+    workflowApiUrl: process.env.NEXT_PUBLIC_WORKFLOW_API_URL || 'http://host.docker.internal:4001',
 
     // Auth API URL (for authentication services)
     authApiUrl:
         process.env.NODE_ENV === 'development'
             ? 'http://host.docker.internal:4001'
-            : (process.env.NEXT_PUBLIC_API_URL || 'https://client.konama.fuzdi.fr'),
+            : process.env.NEXT_PUBLIC_API_URL || 'https://client.konama.fuzdi.fr',
 
     // Check if development mode
     isDev: process.env.NODE_ENV === 'development',
@@ -32,11 +31,7 @@ export const config = {
         const isExternal = apiUrl && !apiUrl.includes('localhost');
 
         if (isExternal) {
-            return (
-                apiUrl
-                    .replace('https://', 'wss://')
-                    .replace('http://', 'ws://') + '/ws'
-            );
+            return apiUrl.replace('https://', 'wss://').replace('http://', 'ws://') + '/ws';
         } else {
             return `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
         }

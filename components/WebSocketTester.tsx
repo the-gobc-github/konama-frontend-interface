@@ -12,7 +12,7 @@ export function WebSocketTester() {
     // Test de connexion WebSocket simple
     const testWebSocketConnection = async () => {
         if (!session?.token) {
-            setTestResult('❌ Aucun token d\'authentification disponible');
+            setTestResult("❌ Aucun token d'authentification disponible");
             return;
         }
 
@@ -20,17 +20,20 @@ export function WebSocketTester() {
         setTestResult('🔄 Test de connexion WebSocket en cours...\n');
 
         try {
-            const wsUrl = `wss://client.konama.fuzdi.fr/ws?token=${encodeURIComponent(session.token)}`;
-            
+            // const wsUrl = `wss://client.konama.fuzdi.fr/ws?token=${encodeURIComponent(session.token)}`;
+            const wsUrl = `wss://host.docker.internal:4001/ws?token=${encodeURIComponent(session.token)}`;
+
             // Test de connexion avec timeout
             const ws = new WebSocket(wsUrl);
             let connected = false;
-            
+
             // Timeout après 10 secondes
             const timeout = setTimeout(() => {
                 if (!connected) {
                     ws.close();
-                    setTestResult(prev => prev + '⏰ Timeout: Aucune réponse du serveur après 10s\n');
+                    setTestResult(
+                        prev => prev + '⏰ Timeout: Aucune réponse du serveur après 10s\n'
+                    );
                     setIsTestingConnection(false);
                 }
             }, 10000);
@@ -39,8 +42,8 @@ export function WebSocketTester() {
                 connected = true;
                 clearTimeout(timeout);
                 setTestResult(prev => prev + '✅ Connexion WebSocket réussie!\n');
-                setTestResult(prev => prev + '📡 Attente d\'événements...\n');
-                
+                setTestResult(prev => prev + "📡 Attente d'événements...\n");
+
                 // Fermer après 5 secondes pour le test
                 setTimeout(() => {
                     ws.close();
@@ -49,29 +52,34 @@ export function WebSocketTester() {
                 }, 5000);
             };
 
-            ws.onerror = (error) => {
+            ws.onerror = error => {
                 clearTimeout(timeout);
                 setTestResult(prev => prev + '❌ Erreur WebSocket: ' + error + '\n');
                 setIsTestingConnection(false);
             };
 
-            ws.onclose = (event) => {
+            ws.onclose = event => {
                 clearTimeout(timeout);
                 if (!connected) {
-                    setTestResult(prev => prev + `❌ Connexion fermée immédiatement - Code: ${event.code}, Raison: ${event.reason}\n`);
+                    setTestResult(
+                        prev =>
+                            prev +
+                            `❌ Connexion fermée immédiatement - Code: ${event.code}, Raison: ${event.reason}\n`
+                    );
                     if (event.code === 1008) {
-                        setTestResult(prev => prev + '🔐 Code 1008: Problème d\'authentification probable\n');
+                        setTestResult(
+                            prev => prev + "🔐 Code 1008: Problème d'authentification probable\n"
+                        );
                     }
                 }
                 setIsTestingConnection(false);
             };
 
-            ws.onmessage = (event) => {
+            ws.onmessage = event => {
                 setTestResult(prev => prev + '📨 Message reçu: ' + event.data + '\n');
             };
-
         } catch (error) {
-            setTestResult(prev => prev + '💥 Erreur lors de l\'initialisation: ' + error + '\n');
+            setTestResult(prev => prev + "💥 Erreur lors de l'initialisation: " + error + '\n');
             setIsTestingConnection(false);
         }
     };
@@ -79,25 +87,28 @@ export function WebSocketTester() {
     // Test de l'API REST
     const testAPIConnection = async () => {
         if (!session?.token) {
-            setTestResult('❌ Aucun token d\'authentification disponible');
+            setTestResult("❌ Aucun token d'authentification disponible");
             return;
         }
 
         setIsTestingAPI(true);
-        setTestResult('🔄 Test de l\'API REST en cours...\n');
+        setTestResult("🔄 Test de l'API REST en cours...\n");
 
         try {
             // Test avec un taskId fictif pour voir la structure de la réponse
             const testTaskId = 'test-task-id';
-            const response = await fetch(`https://client.konama.fuzdi.fr/tasks/${testTaskId}`, {
+            // const response = await fetch(`https://client.konama.fuzdi.fr/tasks/${testTaskId}`, {
+            const response = await fetch(`http://host.docker.internal:4001/tasks/${testTaskId}`, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${session.token}`,
+                    Authorization: `Bearer ${session.token}`,
                     'Content-Type': 'application/json',
                 },
             });
 
-            setTestResult(prev => prev + `📡 Statut de réponse: ${response.status} ${response.statusText}\n`);
+            setTestResult(
+                prev => prev + `📡 Statut de réponse: ${response.status} ${response.statusText}\n`
+            );
 
             if (response.ok) {
                 const data = await response.json();
@@ -105,7 +116,7 @@ export function WebSocketTester() {
                 setTestResult(prev => prev + JSON.stringify(data, null, 2) + '\n');
             } else {
                 const errorText = await response.text();
-                setTestResult(prev => prev + '⚠️ Réponse d\'erreur:\n');
+                setTestResult(prev => prev + "⚠️ Réponse d'erreur:\n");
                 setTestResult(prev => prev + errorText + '\n');
             }
         } catch (error) {
